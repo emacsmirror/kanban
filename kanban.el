@@ -72,9 +72,7 @@ use org-mode to supply new TODO entries."
                                                                         (reverse (rest (reverse 
                                                                                         (split-string shortline " "))))
                                                                         " ") shortline)))
-                                              (if (not (member keyword (split-string cleanline " "))) 
-                                                  nil
-                                                (concat "[[" cleanline "][" clean "]]" )))))))
+                                                (concat "[[" cleanline "][" clean "]]" ))))))
                                     (if match match (concat "TODO=\"" (nth 0 org-todo-keywords-1) "\""))
                                                             'agenda)))))
    (if
