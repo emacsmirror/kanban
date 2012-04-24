@@ -75,10 +75,10 @@ use org-mode to supply new TODO entries."
                                               (if (not (member keyword (split-string cleanline " "))) 
                                                   nil
                                                 (concat "[[" cleanline "][" clean "]]" )))))))
-                                    match 'agenda)))))
+                                    (if match match (concat "TODO=\"" (nth 0 org-todo-keywords-1) "\""))
+                                                            'agenda)))))
    (if
-       (or (member elem
-               (list cels)) (equal elem nil))
-               "" elem)))
+       (or (member elem (list cels)) (equal elem nil))
+               " " elem)))
 
 (provide 'kanban)
