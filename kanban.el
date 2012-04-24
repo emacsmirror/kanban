@@ -79,3 +79,5 @@ use org-mode to supply new TODO entries."
    (if
        (member elem
                (list cels)) "" elem)))
+
+(provide 'kanban)
