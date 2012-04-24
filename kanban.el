@@ -31,7 +31,7 @@ table."
 org-mode headers which have a TODO state in their respective TODO
 state. Useful for getting a simple overview of your tasks."
   (let
-      ((elem (nth (- column 1) 
+      ((elem (nth (- column 2) 
                   (delete nil (org-map-entries
                                (lambda ()
                                  (let ((line (filter-buffer-substring 
@@ -53,7 +53,7 @@ state. Useful for getting a simple overview of your tasks."
 table with org-mode TODO entries, if they are not in another cell
 of the table. This allows you to set the state manually and just
 use org-mode to supply new TODO entries."
- (let ((elem (nth (- column 1) (delete nil
+ (let ((elem (nth (- column 2) (delete nil
                                    (org-map-entries
                                     (lambda
                                       ()
