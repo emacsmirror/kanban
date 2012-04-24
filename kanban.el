@@ -26,7 +26,7 @@ states will be shown, with n as the number of columns in your
 table."
   (let ((words org-todo-keywords-1)) (nth (- column 1) words)))
 
-(defun kanban-zero (column row)
+(defun kanban-zero (column row &optional match)
   "Zero-state Kanban board: This Kanban board just displays all
 org-mode headers which have a TODO state in their respective TODO
 state. Useful for getting a simple overview of your tasks."
@@ -43,7 +43,9 @@ state. Useful for getting a simple overview of your tasks."
                                                           (+ (length keyword) 1)
                                                           (min 30 (length cleanline))) "]]" ))))
                                ; select the TODO state via the matcher: just match the TODO.
-                               (concat "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\"") 
+                               (if match 
+                                   (concat match "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\"")
+                                 (concat "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\""))
                                ; read all agenda files
                                'agenda)))))
     (if
