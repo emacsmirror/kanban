@@ -38,12 +38,14 @@ state. Useful for getting a simple overview of your tasks."
                                               (point) (line-end-position)))
                                        (keyword (nth (- row 1) org-todo-keywords-1)))
                                    (let ((cleanline (nth 1 (split-string line "* "))))
-                                     (if (not (member keyword (split-string cleanline " ")))
-                                         nil
-                                       (concat "[[" cleanline "][" 
+                                     (concat "[[" cleanline "][" 
                                                (substring cleanline
                                                           (+ (length keyword) 1)
-                                                          (min 30 (length cleanline))) "]]" ))))) nil 'agenda)))))
+                                                          (min 30 (length cleanline))) "]]" ))))
+                               ; select the TODO state via the matcher: just match the TODO.
+                               (concat "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\"") 
+                               ; read all agenda files
+                               'agenda)))))
     (if
         (equal
          elem nil) "" elem)))
