@@ -73,7 +73,9 @@ use org-mode to supply new TODO entries."
                                                                                         (split-string shortline " "))))
                                                                         " ") shortline)))
                                                 (concat "[[" cleanline "][" clean "]]" ))))))
-                                    (if match match (concat "TODO=\"" (nth 0 org-todo-keywords-1) "\""))
+                                    (if match 
+                                        (concat match "+TODO=\"" (nth 0 org-todo-keywords-1) "\"")
+                                         (concat "+TODO=\"" (nth 0 org-todo-keywords-1) "\""))
                                                             'agenda)))))
    (if
        (or (member elem (list cels)) (equal elem nil))
