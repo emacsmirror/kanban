@@ -59,7 +59,7 @@ use org-mode to supply new TODO entries."
                                       ()
                                       (let
                                           ((line (filter-buffer-substring (point) (line-end-position)))
-                                           (keyword "❢"))
+                                           (keyword (nth 0 org-todo-keywords-1)))
                                         (let ((cleanline (nth 1 (split-string line "* "))))
                                           (let ((shortline (substring cleanline 
                                                                       (+ (length keyword) 1) 
@@ -77,7 +77,8 @@ use org-mode to supply new TODO entries."
                                                 (concat "[[" cleanline "][" clean "]]" )))))))
                                     match 'agenda)))))
    (if
-       (member elem
-               (list cels)) "" elem)))
+       (or (member elem
+               (list cels)) (equal elem nil))
+               "" elem)))
 
 (provide 'kanban)
