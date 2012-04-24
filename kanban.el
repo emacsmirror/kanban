@@ -8,15 +8,19 @@
 ;; |---+---+---|
 ;; |   |   |   |
 ;; |   |   |   |
-;; #+TBLFM: @1='(kanban-headers $#)::@2$1..@>$>='(kanban-zero $# @#)
-;;
+;; #+TBLFM: @1='(kanban-headers $#)::@2$1..@>$>='(kanban-zero $# @# "TAG")
+;; "TAG" is optional
+;; 
 ;; * Stateful Kanban: Use org-mode to retrieve tasks, but track their state in the Kanban board
 ;;
 ;; |   |   |   |
 ;; |---+---+---|
 ;; |   |   |   |
 ;; |   |   |   |
-;; #+TBLFM: (kanban-headers $#)::@2$1..@>$>='(kanban @# @2$2..@>$>)
+;; #+TBLFM: (kanban-headers $#)::@2$1..@>$>='(kanban @# @2$2..@>$> "TAG")
+;; "TAG" is optional
+;;
+;; TODO: The links don’t yet work for tagged entries. Fix that. There has to be some org-mode function to retrieve the plain header.
 
 
 (defun kanban-headers (column)
