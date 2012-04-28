@@ -56,7 +56,7 @@ state. Useful for getting a simple overview of your tasks."
         (equal
          elem nil) "" elem)))
 
-(defun kanban (column cels &optional match)
+(defun kanban-item (column cels &optional match)
   "Kanban TODO item grabber. Fills the first row of the kanban
 table with org-mode TODO entries, if they are not in another cell
 of the table. This allows you to set the state manually and just
