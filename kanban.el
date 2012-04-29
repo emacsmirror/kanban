@@ -1,4 +1,28 @@
-;; Use org-tables as kanban tables for more efficient todo tracking.
+;;; kanban.el --- Parse org-todo headlines to use org-tables as Kanban tables
+;;--------------------------------------------------------------------
+;;
+;; Copyright (C) 2012, Arne Babenhauserheide <arne_bab(at)web(dot)de>
+;;
+;; This file is NOT part of Emacs.
+;;
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 2 of
+;; the License, or (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be
+;; useful, but WITHOUT ANY WARRANTY; without even the implied
+;; warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+;; PURPOSE.  See the GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public
+;; License along with this program; if not, write to the Free
+;; Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+;; MA 02111-1307 USA
+;; 
+;; To use, save kanban.el to a directory in your load-path.
+;;
+;; (require 'kanban)
 ;;
 ;; Usage: 
 ;;
@@ -8,8 +32,8 @@
 ;; |---+---+---|
 ;; |   |   |   |
 ;; |   |   |   |
-;; #+TBLFM: @1='(kanban-headers $#)::@2$1..@>$>='(kanban-zero $# @# "TAG")
-;; "TAG" is optional
+;; #+TBLFM: @1='(kanban-headers $#)::@2$1..@>$>='(kanban-zero $# @# "TAG" '(list-of-files))
+;; "TAG" and the list of files are optional
 ;; 
 ;; * Stateful Kanban: Use org-mode to retrieve tasks, but track their state in the Kanban board
 ;;
@@ -17,8 +41,8 @@
 ;; |---+---+---|
 ;; |   |   |   |
 ;; |   |   |   |
-;; #+TBLFM: (kanban-headers $#)::@2$1..@>$>='(kanban @# @2$2..@>$> "TAG")
-;; "TAG" is optional
+;; #+TBLFM: (kanban-headers $#)::@2$1..@>$>='(kanban @# @2$2..@>$>  "TAG" '(list-of-files))
+;; "TAG" and the list of files are optional
 ;;
 ;; TODO: The links don’t yet work for tagged entries. Fix that. There has to be some org-mode function to retrieve the plain header.
 
