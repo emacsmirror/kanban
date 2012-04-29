@@ -3,6 +3,8 @@
 ;;
 ;; Copyright (C) 2012, Arne Babenhauserheide <arne_bab(at)web(dot)de>
 ;;
+;; Version 0.1
+;;
 ;; This file is NOT part of Emacs.
 ;;
 ;; This program is free software; you can redistribute it and/or
