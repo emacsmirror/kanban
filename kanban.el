@@ -56,7 +56,7 @@ state. Useful for getting a simple overview of your tasks."
         (equal
          elem nil) "" elem)))
 
-(defun kanban-item (column cels &optional match)
+(defun kanban-todo (column cels &optional match scope)
   "Kanban TODO item grabber. Fills the first row of the kanban
 table with org-mode TODO entries, if they are not in another cell
 of the table. This allows you to set the state manually and just
@@ -84,7 +84,7 @@ use org-mode to supply new TODO entries."
                                     (if match 
                                         (concat match "+TODO=\"" (nth 0 org-todo-keywords-1) "\"")
                                          (concat "+TODO=\"" (nth 0 org-todo-keywords-1) "\""))
-                                                            'agenda)))))
+                                                            (if scope scope 'agenda))))))
    (if
        (or (member elem (list cels)) (equal elem nil))
                " " elem)))
