@@ -41,7 +41,7 @@
 ;; |---+---+---|
 ;; |   |   |   |
 ;; |   |   |   |
-;; #+TBLFM: (kanban-headers $#)::@2$1..@>$>='(kanban @# @2$2..@>$>  "TAG" '(list-of-files))
+;; #+TBLFM: (kanban-headers $#)::@2$1..@>$>='(kanban-todo @# @2$2..@>$>  "TAG" '(list-of-files))
 ;; "TAG" and the list of files are optional
 ;;
 ;; TODO: The links don’t yet work for tagged entries. Fix that. There has to be some org-mode function to retrieve the plain header.
