@@ -24,7 +24,8 @@
 states. If the table is too narrow, the only the first n TODO
 states will be shown, with n as the number of columns in your
 table."
-  (let ((words org-todo-keywords-1)) (nth (- column 1) words)))
+  (let ((words org-todo-keywords-1)) 
+    (nth (- column 1) words)))
 
 (defun kanban-zero (column row &optional match)
   "Zero-state Kanban board: This Kanban board just displays all
