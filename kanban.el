@@ -1,4 +1,30 @@
-;; Use org-tables as kanban tables for more efficient todo tracking.
+;;; kanban.el --- Parse org-todo headlines to use org-tables as Kanban tables
+;;--------------------------------------------------------------------
+;;
+;; Copyright (C) 2012, Arne Babenhauserheide <arne_bab(at)web(dot)de>
+;;
+;; Version 0.1
+;;
+;; This file is NOT part of Emacs.
+;;
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 2 of
+;; the License, or (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be
+;; useful, but WITHOUT ANY WARRANTY; without even the implied
+;; warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+;; PURPOSE.  See the GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public
+;; License along with this program; if not, write to the Free
+;; Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+;; MA 02111-1307 USA
+;; 
+;; To use, save kanban.el to a directory in your load-path.
+;;
+;; (require 'kanban)
 ;;
 ;; Usage: 
 ;;
@@ -8,15 +34,19 @@
 ;; |---+---+---|
 ;; |   |   |   |
 ;; |   |   |   |
-;; #+TBLFM: @1='(kanban-headers $#)::@2$1..@>$>='(kanban-zero $# @#)
-;;
+;; #+TBLFM: @1='(kanban-headers $#)::@2$1..@>$>='(kanban-zero $# @# "TAG" '(list-of-files))
+;; "TAG" and the list of files are optional
+;; 
 ;; * Stateful Kanban: Use org-mode to retrieve tasks, but track their state in the Kanban board
 ;;
 ;; |   |   |   |
 ;; |---+---+---|
 ;; |   |   |   |
 ;; |   |   |   |
-;; #+TBLFM: (kanban-headers $#)::@2$1..@>$>='(kanban @# @2$2..@>$>)
+;; #+TBLFM: (kanban-headers $#)::@2$1..@>$>='(kanban-todo @# @2$2..@>$>  "TAG" '(list-of-files))
+;; "TAG" and the list of files are optional
+;;
+;; TODO: The links don’t yet work for tagged entries. Fix that. There has to be some org-mode function to retrieve the plain header.
 
 
 (defun kanban-headers (column)
@@ -27,7 +57,7 @@ table."
   (let ((words org-todo-keywords-1)) 
     (nth (- column 1) words)))
 
-(defun kanban-zero (column row &optional match)
+(defun kanban-zero (column row &optional match scope)
   "Zero-state Kanban board: This Kanban board just displays all
 org-mode headers which have a TODO state in their respective TODO
 state. Useful for getting a simple overview of your tasks."
@@ -48,12 +78,12 @@ state. Useful for getting a simple overview of your tasks."
                                    (concat match "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\"")
                                  (concat "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\""))
                                ; read all agenda files
-                               'agenda)))))
+                               (if scope scope 'agenda))))))
     (if
         (equal
          elem nil) "" elem)))
 
-(defun kanban (column cels &optional match)
+(defun kanban-todo (column cels &optional match scope)
   "Kanban TODO item grabber. Fills the first row of the kanban
 table with org-mode TODO entries, if they are not in another cell
 of the table. This allows you to set the state manually and just
@@ -81,7 +111,7 @@ use org-mode to supply new TODO entries."
                                     (if match 
                                         (concat match "+TODO=\"" (nth 0 org-todo-keywords-1) "\"")
                                          (concat "+TODO=\"" (nth 0 org-todo-keywords-1) "\""))
-                                                            'agenda)))))
+                                                            (if scope scope 'agenda))))))
    (if
        (or (member elem (list cels)) (equal elem nil))
                " " elem)))
