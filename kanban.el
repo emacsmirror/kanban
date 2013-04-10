@@ -54,14 +54,11 @@
 ;; |---+---+---|
 ;; |   |   |   |
 ;; |   |   |   |
-;; #+TBLFM: (kanban-headers $#)::@2$1..@>$>='(kanban-todo @# @2$2..@>$>  "TAG" '(list-of-files))
+;; #+TBLFM: @1='(kanban-headers $#)::@2$1..@>$1='(kanban-todo @# @2$2..@>$> "TAG" '(list-of-files))
 ;; "TAG" and the list of files are optional
 ;;
 ;; TODO: The links don’t yet work for tagged entries. Fix that. There
 ;; has to be some org-mode function to retrieve the plain header.
-;; 
-;; TODO: Links in kanban-todo don’t yet work for kanban boards which
-;; retrieve todo states from other files.
 
 ;;; Code:
 
@@ -138,7 +135,8 @@ use org-mode to supply new TODO entries."
                                                             (if scope scope 'agenda))))))
    (if
        (or (member elem (list cels)) (equal elem nil))
-               " " elem)))
+       " " ; the element exists in another table or is nil: Keep the cel empty
+     elem))) ; otherwise use the element.
 
 (provide 'kanban)
 ;;; kanban.el ends here
