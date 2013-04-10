@@ -114,8 +114,11 @@ use org-mode to supply new TODO entries."
                                     (lambda
                                       ()
                                       (let
-                                          ((line (filter-buffer-substring (point) (line-end-position)))
+                                          ((file (buffer-file-name))
+                                           (line (filter-buffer-substring (point) (line-end-position)))
                                            (keyword (nth 0 org-todo-keywords-1)))
+                                        (if file
+                                            (setq file (concat file "::")))
                                         (let ((cleanline (nth 1 (split-string line "* "))))
                                           (let ((shortline (substring cleanline 
                                                                       (+ (length keyword) 1) 
@@ -128,7 +131,7 @@ use org-mode to supply new TODO entries."
                                                                         (reverse (rest (reverse 
                                                                                         (split-string shortline " "))))
                                                                         " ") shortline)))
-                                                (concat "[[" cleanline "][" clean "]]" ))))))
+                                                (concat "[[" file cleanline "][" clean "]]" ))))))
                                     (if match 
                                         (concat match "+TODO=\"" (nth 0 org-todo-keywords-1) "\"")
                                          (concat "+TODO=\"" (nth 0 org-todo-keywords-1) "\""))
