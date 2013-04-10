@@ -1,10 +1,13 @@
 ;;; kanban.el --- Parse org-todo headlines to use org-tables as Kanban tables
 ;;--------------------------------------------------------------------
 ;;
-;; Copyright (C) 2012, Arne Babenhauserheide <arne_bab(at)web(dot)de>
-;;
-;; Version 0.1
-;;
+;; Copyright (C) 2013  Arne Babenhauserheide <arne_bab@web.de>
+
+;; Version: 0.1
+
+;; Author: Arne Babenhauserheide <arne_bab@web.de>
+;; Keywords: outlines, convenience
+
 ;; This file is NOT part of Emacs.
 ;;
 ;; This program is free software; you can redistribute it and/or
@@ -22,6 +25,8 @@
 ;; Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 ;; MA 02111-1307 USA
 ;; 
+;;; Commentary:
+
 ;; To use, save kanban.el to a directory in your load-path.
 ;;
 ;; (require 'kanban)
@@ -30,6 +35,12 @@
 ;;
 ;; * Zero state Kanban: Directly displaying org-mode todo states as kanban board
 ;;
+;; Use the functions kanban-headers and kanban-zero in TBLFM lines to
+;; get your org-mode todo states as kanban table. Update with C-c C-c
+;; on the TBLFM line.
+;; 
+;; Example:
+;; 
 ;; |   |   |   |
 ;; |---+---+---|
 ;; |   |   |   |
@@ -46,7 +57,14 @@
 ;; #+TBLFM: (kanban-headers $#)::@2$1..@>$>='(kanban-todo @# @2$2..@>$>  "TAG" '(list-of-files))
 ;; "TAG" and the list of files are optional
 ;;
-;; TODO: The links don’t yet work for tagged entries. Fix that. There has to be some org-mode function to retrieve the plain header.
+;; TODO: The links don’t yet work for tagged entries. Fix that. There
+;; has to be some org-mode function to retrieve the plain header.
+;; 
+;; TODO: Links in kanban-todo don’t yet work for kanban boards which
+;; retrieve todo states from other files.
+
+;;; Code:
+
 
 
 (defun kanban-headers (column)
@@ -120,3 +138,4 @@ use org-mode to supply new TODO entries."
                " " elem)))
 
 (provide 'kanban)
+;;; kanban.el ends here
