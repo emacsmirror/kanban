@@ -65,11 +65,14 @@ state. Useful for getting a simple overview of your tasks."
       ((elem (nth (- column 2) 
                   (delete nil (org-map-entries
                                (lambda ()
-                                 (let ((line (filter-buffer-substring 
+                                 (let ((file (buffer-file-name))
+                                       (line (filter-buffer-substring 
                                               (point) (line-end-position)))
                                        (keyword (nth (- row 1) org-todo-keywords-1)))
+                                   (if file
+                                       (setq file (concat file "::")))
                                    (let ((cleanline (nth 1 (split-string line "* "))))
-                                     (concat "[[" cleanline "][" 
+                                     (concat "[[" file cleanline "][" 
                                                (substring cleanline
                                                           (+ (length keyword) 1)
                                                           (min 30 (length cleanline))) "]]" ))))
