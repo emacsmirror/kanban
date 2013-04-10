@@ -59,7 +59,9 @@
 ;;
 ;; TODO: The links don’t yet work for tagged entries. Fix that. There
 ;; has to be some org-mode function to retrieve the plain header.
-
+;; 
+;; TODO: Headings containing links are broken. Badly.
+;; 
 ;;; Code:
 
 
