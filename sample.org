@@ -1,0 +1,21 @@
+Example Kanban File
+
+# thanks to duply.han!
+
+#+FILETAGS: board
+#+CATEGORY: board
+#+STARTUP: nofold
+* Zero state Kanban: == * Attention * ==
+| TODO | NEXT                 | DONE | WAITING | HOLD | MAYBE |
+|------+----------------------+------+---------+------+-------|
+|      |                      |      |         |      |       |
+|      |                      |      |         |      |       |
+|      |                      |      |         |      |       |
+|      |                      |      |         |      |       |
+|      |                      |      |         |      |       |
+|      |                      |      |         |      |       |
+|      |                      |      |         |      |       |
+|      |                      |      |         |      |       |
+|      |                      |      |         |      |       |
+|      |                      |      |         |      |       |
+#+TBLFM: @2$1..@>$>='(kanban-zero @# $# "+prj-HOLD" '(org-agenda-files))::@1='(kanban-headers $#)
