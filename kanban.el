@@ -60,7 +60,7 @@
 ;; TODO: The links don’t yet work for tagged entries. Fix that. There
 ;; has to be some org-mode function to retrieve the plain header.
 ;; 
-;; TODO: Headings containing links are broken. Badly.
+;; TODO: kanban-todo sometimes inserts no tasks at all if there are multiple tasks in non-standard states.
 ;; 
 ;;; Code:
 
@@ -90,11 +90,21 @@ Gets the COLUMN and ROW via TBLFM ($# and @#) and can get a string as MATCH to s
                                        (keyword (nth (- row 1) org-todo-keywords-1)))
                                    (if file
                                        (setq file (concat file "::")))
-                                   (let ((cleanline (nth 1 (split-string line "* "))))
-                                     (concat "[[" file cleanline "][" 
-                                               (substring cleanline
-                                                          (+ (length keyword) 1)
-                                                          (min 30 (length cleanline))) "]]" ))))
+                                   ; clean up the string
+                                   (let* (; first remove the initial headline marker FIXME: currently gets later "* ", too
+                                          (cleanline (nth 1 (split-string line "* "))) 
+                                          ; and kill off links in the link part
+                                          (link (replace-regexp-in-string "\\[" "%5B" 
+                                                                                   (replace-regexp-in-string "\\]" "%5D" cleanline)))
+                                          ; then kill off trailing space and tags in the name part
+                                          (notrailing (replace-regexp-in-string "\\( +$\\| +:\\w.*: *$\\)" "" cleanline))
+                                          ; and links
+                                          (nolinks (replace-regexp-in-string "\\[\\[\\(.*\\)\\]\\[\\(.*\\)\\]\\]" "{\\2}" notrailing))
+                                          ; finally shorten the string to a maximum length of 30 chars
+                                          (clean (substring nolinks
+                                                            (+ (length keyword) 1)
+                                                            (min 30 (length nolinks)))))
+                                     (concat "[[" file link "][" clean "]]" ))))
                                ; select the TODO state via the matcher: just match the TODO.
                                (if match 
                                    (concat match "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\"")
