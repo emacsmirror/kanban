@@ -155,5 +155,25 @@ Gets the COLUMN and all other CELS via TBLFM ($# and @2$2..@>$>) and can get a s
        " " ; the element exists in another table or is nil: Keep the cel empty
      elem))) ; otherwise use the element.
 
+
+
+;; An example for auto-updating kanban tables from duply.han
+;; I use the double-dash to mark this as "private" function
+(defun kanban--update-function (&optional kanbanbufferregexp)
+  (when (not (stringp kanbanbufferregexp))
+      (setq kanbanbufferregexp "k[a-z]+kk.org"))
+  (when (and (stringp buffer-file-name)
+             (string-match kanbanbufferregexp buffer-file-name)) ;; match files such as kXXkk.org, kYYkk.org etc.
+    (save-excursion
+      (beginning-of-buffer)
+      (while (search-forward "='(kanban-" nil t)
+        (org-ctrl-c-ctrl-c)))))
+
+; The following lines activate the auto-updating.
+
+; (run-at-time "3 min" 180 '(lambda () (kanban--update-function)))
+;; refreshes kanban table every 3 min after emacs startup.
+; (add-hook 'find-file-hook 'kanban--update-function)
+
 (provide 'kanban)
 ;;; kanban.el ends here
