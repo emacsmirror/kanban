@@ -1,10 +1,13 @@
 ;;; kanban.el --- Parse org-todo headlines to use org-tables as Kanban tables
 ;;--------------------------------------------------------------------
 ;;
-;; Copyright (C) 2012, Arne Babenhauserheide <arne_bab(at)web(dot)de>
-;;
-;; Version 0.1
-;;
+;; Copyright (C) 2012--2013  Arne Babenhauserheide <arne_bab@web.de>
+
+;; Version: 0.1.1
+
+;; Author: Arne Babenhauserheide <arne_bab@web.de>
+;; Keywords: outlines, convenience
+
 ;; This file is NOT part of Emacs.
 ;;
 ;; This program is free software; you can redistribute it and/or
@@ -22,6 +25,8 @@
 ;; Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 ;; MA 02111-1307 USA
 ;; 
+;;; Commentary:
+
 ;; To use, save kanban.el to a directory in your load-path.
 ;;
 ;; (require 'kanban)
@@ -30,6 +35,12 @@
 ;;
 ;; * Zero state Kanban: Directly displaying org-mode todo states as kanban board
 ;;
+;; Use the functions kanban-headers and kanban-zero in TBLFM lines to
+;; get your org-mode todo states as kanban table. Update with C-c C-c
+;; on the TBLFM line.
+;; 
+;; Example:
+;; 
 ;; |   |   |   |
 ;; |---+---+---|
 ;; |   |   |   |
@@ -43,10 +54,16 @@
 ;; |---+---+---|
 ;; |   |   |   |
 ;; |   |   |   |
-;; #+TBLFM: (kanban-headers $#)::@2$1..@>$>='(kanban-todo @# @2$2..@>$>  "TAG" '(list-of-files))
+;; #+TBLFM: @1='(kanban-headers $#)::@2$1..@>$1='(kanban-todo @# @2$2..@>$> "TAG" '(list-of-files))
 ;; "TAG" and the list of files are optional
 ;;
-;; TODO: The links don’t yet work for tagged entries. Fix that. There has to be some org-mode function to retrieve the plain header.
+;; TODO: The links don’t yet work for tagged entries. Fix that. There
+;; has to be some org-mode function to retrieve the plain header.
+;; 
+;; TODO: Headings containing links are broken. Badly.
+;; 
+;;; Code:
+
 
 
 (defun kanban-headers (column)
@@ -65,11 +82,14 @@ state. Useful for getting a simple overview of your tasks."
       ((elem (nth (- column 2) 
                   (delete nil (org-map-entries
                                (lambda ()
-                                 (let ((line (filter-buffer-substring 
+                                 (let ((file (buffer-file-name))
+                                       (line (filter-buffer-substring 
                                               (point) (line-end-position)))
                                        (keyword (nth (- row 1) org-todo-keywords-1)))
+                                   (if file
+                                       (setq file (concat file "::")))
                                    (let ((cleanline (nth 1 (split-string line "* "))))
-                                     (concat "[[" cleanline "][" 
+                                     (concat "[[" file cleanline "][" 
                                                (substring cleanline
                                                           (+ (length keyword) 1)
                                                           (min 30 (length cleanline))) "]]" ))))
@@ -93,8 +113,11 @@ use org-mode to supply new TODO entries."
                                     (lambda
                                       ()
                                       (let
-                                          ((line (filter-buffer-substring (point) (line-end-position)))
+                                          ((file (buffer-file-name))
+                                           (line (filter-buffer-substring (point) (line-end-position)))
                                            (keyword (nth 0 org-todo-keywords-1)))
+                                        (if file
+                                            (setq file (concat file "::")))
                                         (let ((cleanline (nth 1 (split-string line "* "))))
                                           (let ((shortline (substring cleanline 
                                                                       (+ (length keyword) 1) 
@@ -107,13 +130,15 @@ use org-mode to supply new TODO entries."
                                                                         (reverse (rest (reverse 
                                                                                         (split-string shortline " "))))
                                                                         " ") shortline)))
-                                                (concat "[[" cleanline "][" clean "]]" ))))))
+                                                (concat "[[" file cleanline "][" clean "]]" ))))))
                                     (if match 
                                         (concat match "+TODO=\"" (nth 0 org-todo-keywords-1) "\"")
                                          (concat "+TODO=\"" (nth 0 org-todo-keywords-1) "\""))
                                                             (if scope scope 'agenda))))))
    (if
        (or (member elem (list cels)) (equal elem nil))
-               " " elem)))
+       " " ; the element exists in another table or is nil: Keep the cel empty
+     elem))) ; otherwise use the element.
 
 (provide 'kanban)
+;;; kanban.el ends here
