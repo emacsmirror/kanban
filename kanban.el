@@ -133,23 +133,23 @@ Gets the COLUMN and all other CELS via TBLFM ($# and @2$2..@>$>) and can get a s
                                            (keyword (nth 0 org-todo-keywords-1)))
                                         (if file
                                             (setq file (concat file "::")))
-                                        (let ((cleanline (nth 1 (split-string line "* "))))
-                                          (let ((shortline (substring cleanline 
-                                                                      (+ (length keyword) 1) 
-                                                                      (min 40 (length cleanline)))))
-                                            (let ((clean (if (member " " (split-string 
-                                                                          (substring shortline 
-                                                                                     (min 25 (length shortline)))
-                                                                          ""))
-                                                             (mapconcat 'identity 
-                                                                        (reverse (rest (reverse 
-                                                                                        (split-string shortline " "))))
-                                                                        " ") shortline)))
-                                                (concat "[[" file cleanline "][" clean "]]" ))))))
+                                        (let* ((cleanline (nth 1 (split-string line "* ")))
+                                               (shortline (substring cleanline 
+                                                                     (+ (length keyword) 1) 
+                                                                     (min 40 (length cleanline))))
+                                               (clean (if (member " " (split-string 
+                                                                       (substring shortline 
+                                                                                  (min 25 (length shortline)))
+                                                                       ""))
+                                                          (mapconcat 'identity 
+                                                                     (reverse (rest (reverse 
+                                                                                     (split-string shortline " "))))
+                                                                     " ") shortline)))
+                                          (concat "[[" file cleanline "][" clean "]]" ))))
                                     (if match 
                                         (concat match "+TODO=\"" (nth 0 org-todo-keywords-1) "\"")
-                                         (concat "+TODO=\"" (nth 0 org-todo-keywords-1) "\""))
-                                                            (if scope scope 'agenda))))))
+                                      (concat "+TODO=\"" (nth 0 org-todo-keywords-1) "\""))
+                                    (if scope scope 'agenda))))))
    (if
        (or (member elem (list cels)) (equal elem nil))
        " " ; the element exists in another table or is nil: Keep the cel empty
