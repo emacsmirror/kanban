@@ -64,8 +64,7 @@
 ;; 
 ;;; Code:
 
-
-
+;; Get the defined todo-states from the current org-mode document.
 (defun kanban-headers (column)
   "Fill the headers of your table with your org-mode TODO
 states. If the table is too narrow, the only the first n TODO
@@ -74,10 +73,13 @@ table."
   (let ((words org-todo-keywords-1)) 
     (nth (- column 1) words)))
 
+;; Fill the kanban table with tasks from the 
 (defun kanban-zero (column row &optional match scope)
   "Zero-state Kanban board: This Kanban board just displays all
 org-mode headers which have a TODO state in their respective TODO
-state. Useful for getting a simple overview of your tasks."
+state. Useful for getting a simple overview of your tasks.
+
+Gets the COLUMN and ROW via TBLFM ($# and @#) and can get a string as MATCH to select only entries with a matching tag, as well as a list of org-mode files as the SCOPE to search for tasks."
   (let
       ((elem (nth (- column 2) 
                   (delete nil (org-map-entries
