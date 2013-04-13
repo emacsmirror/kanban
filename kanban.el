@@ -1,9 +1,9 @@
 ;;; kanban.el --- Parse org-todo headlines to use org-tables as Kanban tables
-;;--------------------------------------------------------------------
 ;;
-;; Copyright (C) 2012--2013  Arne Babenhauserheide <arne_bab@web.de>
+;; Copyright (C) 2012-2013  Arne Babenhauserheide <arne_bab@web.de>
 
 ;; Version: 0.1.1
+;; Package-Requires: ((org "7"))
 
 ;; Author: Arne Babenhauserheide <arne_bab@web.de>
 ;; Keywords: outlines, convenience
@@ -27,9 +27,13 @@
 ;; 
 ;;; Commentary:
 
-;; To use, save kanban.el to a directory in your load-path.
+;; If you have not installed this from a package such as those on
+;; Marmalade or MELPA, then save kanban.el to a directory in your
+;; load-path and add
 ;;
 ;; (require 'kanban)
+;;
+;; to your Emacs start-up files.
 ;;
 ;; Usage: 
 ;;
@@ -65,6 +69,7 @@
 ;;; Code:
 
 ;; Get the defined todo-states from the current org-mode document.
+;;;###autoload
 (defun kanban-headers (column)
   "Fill the headers of your table with your org-mode TODO
 states. If the table is too narrow, the only the first n TODO
@@ -74,6 +79,7 @@ table."
     (nth (- column 1) words)))
 
 ;; Fill the kanban table with tasks with corresponding TODO states from org files
+;;;###autoload
 (defun kanban-zero (column row &optional match scope)
   "Zero-state Kanban board: This Kanban board just displays all
 org-mode headers which have a TODO state in their respective TODO
@@ -116,6 +122,7 @@ Gets the COLUMN and ROW via TBLFM ($# and @#) and can get a string as MATCH to s
          elem nil) "" elem)))
 
 ; Fill the first row with TODO items, except if they exist in other cels
+;;;###autoload
 (defun kanban-todo (column cels &optional match scope)
   "Kanban TODO item grabber. Fills the first row of the kanban
 table with org-mode TODO entries, if they are not in another cell
