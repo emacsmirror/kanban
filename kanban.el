@@ -79,7 +79,7 @@ table."
     (nth (- column 1) words)))
 
 (defun kanban--todo-links-function ()
-  "Retrieve all todo headers as org-mode links."
+  "Retrieve the current header as org-mode link."
   (let ((file (buffer-file-name))
         (line (filter-buffer-substring 
                (point) (line-end-position)))
