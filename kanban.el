@@ -117,9 +117,9 @@ Gets the COLUMN and ROW via TBLFM ($# and @#) and can get a string as MATCH to s
                                  (concat "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\""))
                                ; read all agenda files
                                (if scope scope 'agenda))))))
-    (if
-        (equal
-         elem nil) "" elem)))
+    (if (equal elem nil) 
+        ""
+      elem)))
 
 ; Fill the first row with TODO items, except if they exist in other cels
 ;;;###autoload
