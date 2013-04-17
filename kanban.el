@@ -78,6 +78,30 @@ table."
   (let ((words org-todo-keywords-1)) 
     (nth (- column 1) words)))
 
+(defun kanban--todo-links-function ()
+  "Retrieve all todo headers as org-mode links."
+  (let ((file (buffer-file-name))
+        (line (filter-buffer-substring 
+               (point) (line-end-position)))
+        (keyword (nth (- row 1) org-todo-keywords-1)))
+    (if file
+        (setq file (concat file "::")))
+    ; clean up the string
+    (let* (; first remove the initial headline marker FIXME: currently gets later "* ", too
+           (cleanline (nth 1 (split-string line "* "))) 
+           ; and kill off links in the link part
+           (link (replace-regexp-in-string "\\[" "%5B" 
+                                           (replace-regexp-in-string "\\]" "%5D" cleanline)))
+           ; then kill off trailing space and tags in the name part
+           (notrailing (replace-regexp-in-string "\\( +$\\| +:\\w.*: *$\\)" "" cleanline))
+           ; and links
+           (nolinks (replace-regexp-in-string "\\[\\[\\(.*\\)\\]\\[\\(.*\\)\\]\\]" "{\\2}" notrailing))
+           ; finally shorten the string to a maximum length of 30 chars
+           (clean (substring nolinks
+                             (+ (length keyword) 1)
+                             (min 30 (length nolinks)))))
+      (concat "[[" file link "][" clean "]]" ))))
+
 ;; Fill the kanban table with tasks with corresponding TODO states from org files
 ;;;###autoload
 (defun kanban-zero (column row &optional match scope)
@@ -89,28 +113,7 @@ Gets the COLUMN and ROW via TBLFM ($# and @#) and can get a string as MATCH to s
   (let
       ((elem (nth (- column 2) 
                   (delete nil (org-map-entries
-                               (lambda ()
-                                 (let ((file (buffer-file-name))
-                                       (line (filter-buffer-substring 
-                                              (point) (line-end-position)))
-                                       (keyword (nth (- row 1) org-todo-keywords-1)))
-                                   (if file
-                                       (setq file (concat file "::")))
-                                   ; clean up the string
-                                   (let* (; first remove the initial headline marker FIXME: currently gets later "* ", too
-                                          (cleanline (nth 1 (split-string line "* "))) 
-                                          ; and kill off links in the link part
-                                          (link (replace-regexp-in-string "\\[" "%5B" 
-                                                                                   (replace-regexp-in-string "\\]" "%5D" cleanline)))
-                                          ; then kill off trailing space and tags in the name part
-                                          (notrailing (replace-regexp-in-string "\\( +$\\| +:\\w.*: *$\\)" "" cleanline))
-                                          ; and links
-                                          (nolinks (replace-regexp-in-string "\\[\\[\\(.*\\)\\]\\[\\(.*\\)\\]\\]" "{\\2}" notrailing))
-                                          ; finally shorten the string to a maximum length of 30 chars
-                                          (clean (substring nolinks
-                                                            (+ (length keyword) 1)
-                                                            (min 30 (length nolinks)))))
-                                     (concat "[[" file link "][" clean "]]" ))))
+                               'kanban--todo-links-function
                                ; select the TODO state via the matcher: just match the TODO.
                                (if match 
                                    (concat match "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\"")
