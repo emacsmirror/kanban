@@ -95,7 +95,10 @@ table."
            ; then kill off trailing space and tags in the name part
            (notrailing (replace-regexp-in-string "\\( +$\\| +:\\w.*: *$\\)" "" cleanline))
            ; and links
-           (nolinks (replace-regexp-in-string "\\[\\[\\(.*\\)\\]\\[\\(.*\\)\\]\\]" "{\\2}" notrailing))
+           (nolinks (replace-regexp-in-string 
+                     "\\[" "{" (replace-regexp-in-string 
+                                "\\]" "}" (replace-regexp-in-string 
+                                           "\\[\\[\\(.*\\)\\]\\[\\(.*\\)\\]\\]" "{\\2}" notrailing))))
            ; finally shorten the string to a maximum length of 30 chars
            (clean (substring nolinks
                              (+ (length keyword) 1)
