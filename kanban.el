@@ -82,6 +82,8 @@ table."
   (let ((file (buffer-file-name))
         (line (filter-buffer-substring
                (point) (line-end-position)))
+        ; yes, I can use the row variable. It bleeds over from the
+        ; calling function.
         (keyword (nth (- row 1) org-todo-keywords-1)))
     (if file
         (setq file (concat file "::")))
