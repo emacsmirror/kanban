@@ -2,8 +2,7 @@
 ;;
 ;; Copyright (C) 2012-2013  Arne Babenhauserheide <arne_bab@web.de>
 
-;; Version: 0.1.1
-;; Package-Requires: ((org "7"))
+;; Version: 0.1.2
 
 ;; Author: Arne Babenhauserheide <arne_bab@web.de>
 ;; Keywords: outlines, convenience
