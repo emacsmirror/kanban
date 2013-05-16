@@ -49,7 +49,7 @@
 ;; |---+---+---|
 ;; |   |   |   |
 ;; |   |   |   |
-;; #+TBLFM: @1='(kanban-headers $#)::@2$1..@>$>='(kanban-zero $# @# "TAG" '(list-of-files))
+;; #+TBLFM: @1='(kanban-headers $#)::@2$1..@>$>='(kanban-zero @# $# "TAG" '(list-of-files))
 ;; "TAG" and the list of files are optional
 ;; 
 ;; * Stateful Kanban: Use org-mode to retrieve tasks, but track their state in the Kanban board
