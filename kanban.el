@@ -122,7 +122,9 @@ Gets the COLUMN and ROW via TBLFM ($# and @#) and can get a string as MATCH to s
                                    (concat match "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\"")
                                  (concat "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\""))
                                ; read all agenda files
-                               (if scope scope 'agenda))))))
+                               (if scope 
+                                   scope 
+                                 'agenda))))))
     (if (equal elem nil) 
         ""
       elem)))
@@ -162,7 +164,9 @@ Gets the COLUMN and all other CELS via TBLFM ($# and @2$2..@>$>) and can get a s
                                     (if match 
                                         (concat match "+TODO=\"" (nth 0 org-todo-keywords-1) "\"")
                                       (concat "+TODO=\"" (nth 0 org-todo-keywords-1) "\""))
-                                    (if scope scope 'agenda))))))
+                                    (if scope
+                                        scope
+                                      'agenda))))))
    (if
        (or (member elem (list cels)) (equal elem nil))
        " " ; the element exists in another table or is nil: Keep the cel empty
