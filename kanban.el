@@ -118,12 +118,12 @@ Gets the COLUMN and ROW via TBLFM ($# and @#) and can get a string as MATCH to s
                   (delete nil (org-map-entries
                                'kanban--todo-links-function
                                ; select the TODO state via the matcher: just match the TODO.
-                               (if match 
+                               (if match
                                    (concat match "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\"")
                                  (concat "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\""))
                                ; read all agenda files
-                               (if scope 
-                                   scope 
+                               (if scope
+                                   scope
                                  'agenda))))))
     (if (equal elem nil) 
         ""
