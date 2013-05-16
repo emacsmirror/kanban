@@ -24,7 +24,7 @@
 ;; License along with this program; if not, write to the Free
 ;; Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 ;; MA 02111-1307 USA
-;; 
+;;
 ;;; Commentary:
 
 ;; If you have not installed this from a package such as those on
@@ -35,23 +35,23 @@
 ;;
 ;; to your Emacs start-up files.
 ;;
-;; Usage: 
+;; Usage:
 ;;
 ;; * Zero state Kanban: Directly displaying org-mode todo states as kanban board
 ;;
 ;; Use the functions kanban-headers and kanban-zero in TBLFM lines to
 ;; get your org-mode todo states as kanban table. Update with C-c C-c
 ;; on the TBLFM line.
-;; 
+;;
 ;; Example:
-;; 
+;;
 ;; |   |   |   |
 ;; |---+---+---|
 ;; |   |   |   |
 ;; |   |   |   |
 ;; #+TBLFM: @1='(kanban-headers $#)::@2$1..@>$>='(kanban-zero @# $# "TAG" '(list-of-files))
 ;; "TAG" and the list of files are optional
-;; 
+;;
 ;; * Stateful Kanban: Use org-mode to retrieve tasks, but track their state in the Kanban board
 ;;
 ;; |   |   |   |
@@ -63,9 +63,9 @@
 ;;
 ;; TODO: The links don’t yet work for tagged entries. Fix that. There
 ;; has to be some org-mode function to retrieve the plain header.
-;; 
+;;
 ;; TODO: kanban-todo sometimes inserts no tasks at all if there are multiple tasks in non-standard states.
-;; 
+;;
 ;;; Code:
 
 ;; Get the defined todo-states from the current org-mode document.
@@ -75,29 +75,29 @@
 states. If the table is too narrow, the only the first n TODO
 states will be shown, with n as the number of columns in your
 table."
-  (let ((words org-todo-keywords-1)) 
+  (let ((words org-todo-keywords-1))
     (nth (- column 1) words)))
 
 (defun kanban--todo-links-function ()
   "Retrieve the current header as org-mode link."
   (let ((file (buffer-file-name))
-        (line (filter-buffer-substring 
+        (line (filter-buffer-substring
                (point) (line-end-position)))
         (keyword (nth (- row 1) org-todo-keywords-1)))
     (if file
         (setq file (concat file "::")))
     ; clean up the string
     (let* (; first remove the initial headline marker FIXME: currently gets later "* ", too
-           (cleanline (nth 1 (split-string line "* "))) 
+           (cleanline (nth 1 (split-string line "* ")))
            ; and kill off links in the link part
-           (link (replace-regexp-in-string "\\[" "%5B" 
+           (link (replace-regexp-in-string "\\[" "%5B"
                                            (replace-regexp-in-string "\\]" "%5D" cleanline)))
            ; then kill off trailing space and tags in the name part
            (notrailing (replace-regexp-in-string "\\( +$\\| +:\\w.*: *$\\)" "" cleanline))
            ; and links
-           (nolinks (replace-regexp-in-string 
-                     "\\[" "{" (replace-regexp-in-string 
-                                "\\]" "}" (replace-regexp-in-string 
+           (nolinks (replace-regexp-in-string
+                     "\\[" "{" (replace-regexp-in-string
+                                "\\]" "}" (replace-regexp-in-string
                                            "\\[\\[\\(.*\\)\\]\\[\\(.*\\)\\]\\]" "{\\2}" notrailing))))
            ; finally shorten the string to a maximum length of 30 chars
            (clean (substring nolinks
@@ -114,7 +114,7 @@ state. Useful for getting a simple overview of your tasks.
 
 Gets the COLUMN and ROW via TBLFM ($# and @#) and can get a string as MATCH to select only entries with a matching tag, as well as a list of org-mode files as the SCOPE to search for tasks."
   (let
-      ((elem (nth (- column 2) 
+      ((elem (nth (- column 2)
                   (delete nil (org-map-entries
                                'kanban--todo-links-function
                                ; select the TODO state via the matcher: just match the TODO.
@@ -125,7 +125,7 @@ Gets the COLUMN and ROW via TBLFM ($# and @#) and can get a string as MATCH to s
                                (if scope
                                    scope
                                  'agenda))))))
-    (if (equal elem nil) 
+    (if (equal elem nil)
         ""
       elem)))
 
@@ -149,19 +149,19 @@ Gets the COLUMN and all other CELS via TBLFM ($# and @2$2..@>$>) and can get a s
                                         (if file
                                             (setq file (concat file "::")))
                                         (let* ((cleanline (nth 1 (split-string line "* ")))
-                                               (shortline (substring cleanline 
-                                                                     (+ (length keyword) 1) 
+                                               (shortline (substring cleanline
+                                                                     (+ (length keyword) 1)
                                                                      (min 40 (length cleanline))))
-                                               (clean (if (member " " (split-string 
-                                                                       (substring shortline 
+                                               (clean (if (member " " (split-string
+                                                                       (substring shortline
                                                                                   (min 25 (length shortline)))
                                                                        ""))
-                                                          (mapconcat 'identity 
-                                                                     (reverse (rest (reverse 
+                                                          (mapconcat 'identity
+                                                                     (reverse (rest (reverse
                                                                                      (split-string shortline " "))))
                                                                      " ") shortline)))
                                           (concat "[[" file cleanline "][" clean "]]" ))))
-                                    (if match 
+                                    (if match
                                         (concat match "+TODO=\"" (nth 0 org-todo-keywords-1) "\"")
                                       (concat "+TODO=\"" (nth 0 org-todo-keywords-1) "\""))
                                     (if scope
