@@ -65,6 +65,8 @@
 ;;
 ;; TODO: kanban-todo sometimes inserts no tasks at all if there are multiple tasks in non-standard states.
 ;;
+;; TODO: bold text in headlines breaks the parser (*bold*).
+;; 
 ;;; Code:
 
 ;; Get the defined todo-states from the current org-mode document.
