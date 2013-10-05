@@ -48,7 +48,7 @@
 ;; |---+---+---|
 ;; |   |   |   |
 ;; |   |   |   |
-;; #+TBLFM: @1='(kanban-headers $#)::@2$1..@>$>='(kanban-zero @# $# "TAG" '(list-of-files))
+;; #+TBLFM: @1$1='(kanban-headers)::@2$1..@>$>='(kanban-zero @# $# "TAG" '(list-of-files))
 ;; "TAG" and the list of files are optional
 ;;
 ;; * Stateful Kanban: Use org-mode to retrieve tasks, but track their state in the Kanban board
@@ -57,7 +57,7 @@
 ;; |---+---+---|
 ;; |   |   |   |
 ;; |   |   |   |
-;; #+TBLFM: @1='(kanban-headers $#)::@2$1..@>$1='(kanban-todo @# @2$2..@>$> "TAG" '(list-of-files))
+;; #+TBLFM: @1$1='(kanban-headers)::@2$1..@>$1='(kanban-todo @# @2$2..@>$> "TAG" '(list-of-files))
 ;; "TAG" and the list of files are optional
 ;;
 ;; TODO: The links don’t yet work for tagged entries. Fix that. There
@@ -69,13 +69,37 @@
 
 ;; Get the defined todo-states from the current org-mode document.
 ;;;###autoload
-(defun kanban-headers (column)
+(defun kanban-headers (&optional startcolumn)
   "Fill the headers of your table with your org-mode TODO
 states. If the table is too narrow, the only the first n TODO
 states will be shown, with n as the number of columns in your
-table."
-  (let ((words org-todo-keywords-1))
-    (nth (- column 1) words)))
+table.
+
+Only not already present TODO states will be filled into empty
+fields starting from the current column. All columns left of
+the current one are left untouched.
+
+Optionally ignore fields in columns left of STARTCOLUMN"
+  (let* ((ofc (org-table-get nil nil)) ; remember old field content
+     (col (org-table-current-column)) ; and current column
+     (startcolumn (or startcolumn col))
+     (kwl org-todo-keywords-1)
+     kw)
+  (while (setq kw (pop kwl)) ; iterate over all TODO states
+    (let ((matchcol 0) ; insert kw in this empty column
+      (n startcolumn)
+      field)
+    (while (and matchcol (<= n org-table-current-ncol))
+      (if (equal kw (setq field (org-table-get nil n)))
+        (setq matchcol nil) ; kw already in column n
+      (if (and (= 0 matchcol) (equal "" field))
+        (setq matchcol n))) ; remember first empty column
+      (setq n (+ 1 n)))
+    (when (and matchcol (> 0 matchcol))
+      (if (= matchcol col) (setq ofc kw))
+      (save-excursion
+      (org-table-get-field matchcol kw)))))
+  ofc))
 
 (defun kanban--todo-links-function ()
   "Retrieve the current header as org-mode link."
