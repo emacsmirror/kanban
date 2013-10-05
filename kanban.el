@@ -95,7 +95,7 @@ Optionally ignore fields in columns left of STARTCOLUMN"
       (if (and (= 0 matchcol) (equal "" field))
         (setq matchcol n))) ; remember first empty column
       (setq n (+ 1 n)))
-    (when (and matchcol (> 0 matchcol))
+    (when (and matchcol (> matchcol 0))
       (if (= matchcol col) (setq ofc kw))
       (save-excursion
       (org-table-get-field matchcol kw)))))
