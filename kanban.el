@@ -130,20 +130,20 @@ Optionally ignore fields in columns left of STARTCOLUMN"
 
 ;; Fill the kanban table with tasks with corresponding TODO states from org files
 ;;;###autoload
-(defun kanban-zero (column row &optional match scope)
+(defun kanban-zero (row column &optional match scope)
   "Zero-state Kanban board: This Kanban board just displays all
 org-mode headers which have a TODO state in their respective TODO
 state. Useful for getting a simple overview of your tasks.
 
-Gets the COLUMN and ROW via TBLFM ($# and @#) and can get a string as MATCH to select only entries with a matching tag, as well as a list of org-mode files as the SCOPE to search for tasks."
+Gets the ROW and COLUMN via TBLFM ($# and @#) and can get a string as MATCH to select only entries with a matching tag, as well as a list of org-mode files as the SCOPE to search for tasks."
   (let
-      ((elem (nth (- column 2)
+      ((elem (nth (- row 2)
                   (delete nil (org-map-entries
                                'kanban--todo-links-function
                                ; select the TODO state via the matcher: just match the TODO.
                                (if match
-                                   (concat match "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\"")
-                                 (concat "+TODO=\"" (nth (- row 1) org-todo-keywords-1) "\""))
+                                   (concat match "+TODO=\"" (nth (- column 1) org-todo-keywords-1) "\"")
+                                 (concat "+TODO=\"" (nth (- column 1) org-todo-keywords-1) "\""))
                                ; read all agenda files
                                (if scope
                                    scope
@@ -152,16 +152,16 @@ Gets the COLUMN and ROW via TBLFM ($# and @#) and can get a string as MATCH to s
         ""
       elem)))
 
-; Fill the first row with TODO items, except if they exist in other cels
+; Fill the first column with TODO items, except if they exist in other cels
 ;;;###autoload
-(defun kanban-todo (column cels &optional match scope)
-  "Kanban TODO item grabber. Fills the first row of the kanban
+(defun kanban-todo (row cels &optional match scope)
+  "Kanban TODO item grabber. Fills the first column of the kanban
 table with org-mode TODO entries, if they are not in another cell
 of the table. This allows you to set the state manually and just
 use org-mode to supply new TODO entries.
 
-Gets the COLUMN and all other CELS via TBLFM ($# and @2$2..@>$>) and can get a string as MATCH to select only entries with a matching tag, as well as a list of org-mode files as the SCOPE to search for tasks."
- (let ((elem (nth (- column 2) (delete nil
+Gets the ROW and all other CELS via TBLFM ($# and @2$2..@>$>) and can get a string as MATCH to select only entries with a matching tag, as well as a list of org-mode files as the SCOPE to search for tasks."
+ (let ((elem (nth (- row 2) (delete nil
                                    (org-map-entries
                                     (lambda
                                       ()
