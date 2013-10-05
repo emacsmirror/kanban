@@ -101,12 +101,13 @@ Optionally ignore fields in columns left of STARTCOLUMN"
       (org-table-get-field matchcol kw)))))
   ofc))
 
-(defun kanban--todo-links-function ()
+(defun kanban--todo-links-function (srcfile)
   "Retrieve the current header as org-mode link."
   (let ((file (buffer-file-name))
         (line (filter-buffer-substring
                (point) (line-end-position)))
         (keyword (nth (- row 1) org-todo-keywords-1)))
+    (if (equal file srcfile) (setq file nil))
     (if file
         (setq file (concat file "::")))
     ; clean up the string
@@ -145,9 +146,10 @@ state. Useful for getting a simple overview of your tasks.
 Gets the ROW and COLUMN via TBLFM ($# and @#) and can get a string as MATCH to select only entries with a matching tag, as well as a list of org-mode files as the SCOPE to search for tasks."
   (let*
       ((todo (kanban--get-todo-of-current-col))
+       (srcfile (buffer-file-name))
        (elem (and todo (nth (- row 2)
                             (delete nil (org-map-entries
-                               'kanban--todo-links-function
+                               '(kanban--todo-links-function srcfile)
                                ; select the TODO state via the matcher: just match the TODO.
                                (if match
                                    (concat match "+TODO=\"" todo "\"")
@@ -169,7 +171,8 @@ of the table. This allows you to set the state manually and just
 use org-mode to supply new TODO entries.
 
 Gets the ROW and all other CELS via TBLFM ($# and @2$2..@>$>) and can get a string as MATCH to select only entries with a matching tag, as well as a list of org-mode files as the SCOPE to search for tasks."
- (let ((elem (nth (- row 2) (delete nil
+ (let ((srcfile (buffer-file-name))
+       (elem (nth (- row 2) (delete nil
                                    (org-map-entries
                                     (lambda
                                       ()
@@ -177,6 +180,7 @@ Gets the ROW and all other CELS via TBLFM ($# and @2$2..@>$>) and can get a stri
                                           ((file (buffer-file-name))
                                            (line (filter-buffer-substring (point) (line-end-position)))
                                            (keyword (nth 0 org-todo-keywords-1)))
+                                        (if (equal file srcfile) (setq file nil))
                                         (if file
                                             (setq file (concat file "::")))
                                         (let* ((cleanline (nth 1 (split-string line "* ")))
