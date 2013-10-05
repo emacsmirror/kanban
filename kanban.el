@@ -128,6 +128,13 @@ Optionally ignore fields in columns left of STARTCOLUMN"
                              (min 30 (length nolinks)))))
       (concat "[[" file link "][" clean "]]" ))))
 
+;; Get TODO of current column from field in row 1
+(defun kanban--get-todo-of-current-col ()
+  "Get TODO of current column from field in row 1 or nil if
+row 1 does not contain a valid TODO"
+  (let ((todo (org-table-get 1 nil)))
+    (if (member todo org-todo-keywords-1) todo)))
+
 ;; Fill the kanban table with tasks with corresponding TODO states from org files
 ;;;###autoload
 (defun kanban-zero (row column &optional match scope)
@@ -136,18 +143,19 @@ org-mode headers which have a TODO state in their respective TODO
 state. Useful for getting a simple overview of your tasks.
 
 Gets the ROW and COLUMN via TBLFM ($# and @#) and can get a string as MATCH to select only entries with a matching tag, as well as a list of org-mode files as the SCOPE to search for tasks."
-  (let
-      ((elem (nth (- row 2)
-                  (delete nil (org-map-entries
+  (let*
+      ((todo (kanban--get-todo-of-current-col))
+       (elem (and todo (nth (- row 2)
+                            (delete nil (org-map-entries
                                'kanban--todo-links-function
                                ; select the TODO state via the matcher: just match the TODO.
                                (if match
-                                   (concat match "+TODO=\"" (nth (- column 1) org-todo-keywords-1) "\"")
-                                 (concat "+TODO=\"" (nth (- column 1) org-todo-keywords-1) "\""))
+                                   (concat match "+TODO=\"" todo "\"")
+                                 (concat "+TODO=\"" todo "\""))
                                ; read all agenda files
                                (if scope
                                    scope
-                                 'agenda))))))
+                                 'agenda)))))))
     (if (equal elem nil)
         ""
       elem)))
