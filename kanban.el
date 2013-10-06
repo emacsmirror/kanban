@@ -103,31 +103,37 @@ Optionally ignore fields in columns left of STARTCOLUMN"
 
 (defun kanban--todo-links-function (srcfile)
   "Retrieve the current header as org-mode link."
-  (let ((file (buffer-file-name))
-        (line (filter-buffer-substring
-               (point) (line-end-position)))
-        (keyword (nth (- row 1) org-todo-keywords-1)))
+  (let* ((file (buffer-file-name))
+         (oe (org-element-at-point))
+         (title (org-element-property :title oe))
+         (link (org-element-property :CUSTOM_ID oe)))
     (if (equal file srcfile) (setq file nil))
     (if file
         (setq file (concat file "::")))
-    ; clean up the string
-    (let* (; first remove the initial headline marker FIXME: currently gets later "* ", too
-           (cleanline (nth 1 (split-string line "* ")))
-           ; and kill off links in the link part
-           (link (replace-regexp-in-string "\\[" "%5B"
-                                           (replace-regexp-in-string "\\]" "%5D" cleanline)))
-           ; then kill off trailing space and tags in the name part
-           (notrailing (replace-regexp-in-string "\\( +$\\| +:\\w.*: *$\\)" "" cleanline))
-           ; and links
-           (nolinks (replace-regexp-in-string
-                     "\\[" "{" (replace-regexp-in-string
-                                "\\]" "}" (replace-regexp-in-string
-                                           "\\[\\[\\(.*\\)\\]\\[\\(.*\\)\\]\\]" "{\\2}" notrailing))))
-           ; finally shorten the string to a maximum length of 30 chars
-           (clean (substring nolinks
-                             (+ (length keyword) 1)
-                             (min 30 (length nolinks)))))
-      (concat "[[" file link "][" clean "]]" ))))
+    ; find best target
+    (cond
+     (link
+      (setq link (concat "#" link)))
+     ((string-match org-target-regexp title)
+      (setq link (match-string 1 title))
+      (setq title nil))
+     (t
+      (setq link (concat "*" title))))
+    ; clean up the title
+    (when title
+      ; first substitute links with their title
+      (setq title (replace-regexp-in-string "\\[\\(\\[[^]]+\\]\\)?\\[\\([^]]+\\)\\]\\]" "\\2" title))
+      ; then kill off special link relevant characters
+      (setq title (replace-regexp-in-string "\\[" "{"
+                          (replace-regexp-in-string "\\]" "}" title)))
+      ; finally shorten the string to a maximum length of 30 chars
+      (setq title (substring title 0 (min 30 (length title)))))
+    ; clean up the link
+    (when (string-match "[\][]" link)
+      (setq link (replace-regexp-in-string "[\][/]" "." link))
+      (setq link (concat "/" (substring link 1) "/"))
+      (if (not file) (setq file "file:::")))
+    (concat "[[" file link (if title (concat "][" title)) "]]" )))
 
 ;; Get TODO of current column from field in row 1
 (defun kanban--get-todo-of-current-col ()
