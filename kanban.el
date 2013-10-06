@@ -177,8 +177,8 @@ of the table. This allows you to set the state manually and just
 use org-mode to supply new TODO entries.
 
 Gets the ROW and all other CELS via TBLFM ($# and @2$2..@>$>) and can get a string as MATCH to select only entries with a matching tag, as well as a list of org-mode files as the SCOPE to search for tasks."
- (let ((srcfile (buffer-file-name))
-       (elem (nth (- row 2) (delete nil
+ (let* ((srcfile (buffer-file-name))
+        (elem (nth (- row 2) (delete nil
                                    (org-map-entries
                                     (lambda
                                       ()
