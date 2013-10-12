@@ -170,6 +170,30 @@ Gets the ROW and COLUMN via TBLFM ($# and @#) and can get a string as MATCH to s
         ""
       elem)))
 
+(defun kanban--normalize-whitespace (elem)
+"Return ELEM with sequences of spaces reduced to 1 space"
+(replace-regexp-in-string "\\W\\W+" " " elem))
+
+(defun kanban--member-of-table (elem &optional skipcol)
+"Check if ELEM is in some table field
+ignoring all elements of column SKIPCOL.
+
+If SKIPCOL is not set column 1 will be ignored."
+(if (org-at-table-p)
+  (let ((row 2)
+      (skipcol (or skipcol 1))
+      col result field)
+    (while (and (not result) (<= row (length org-table-dlines)))
+    (setq col (if (= 1 skipcol) 2 1))
+    (while (and (not result) (<= col org-table-current-ncol))
+      (setq field (org-table-get row col))
+      (if (and field elem)
+      (setq result (or result (equal (kanban--normalize-whitespace elem) (kanban--normalize-whitespace field)))))
+      (setq col (1+ col))
+      (if (= col skipcol) (setq col (1+ col))))
+    (setq row (1+ row)))
+    result)))
+
 ; Fill the first column with TODO items, except if they exist in other cels
 ;;;###autoload
 (defun kanban-todo (row cels &optional match scope)
@@ -216,6 +240,51 @@ Gets the ROW and all other CELS via TBLFM ($# and @2$2..@>$>) and can get a stri
      elem))) ; otherwise use the element.
 
 
+(defun kanban-fill (&optional match scope)
+  "Kanban TODO item grabber. Fills the current row of the kanban
+table with org-mode TODO entries, if they are not in another cell
+of the table. This allows you to set the state manually and just
+use org-mode to supply new TODO entries.
+
+Can get a string as MATCH to select only entries with a matching tag, as well as a list of org-mode files as the SCOPE to search for tasks.
+
+Only not already present TODO states will be filled into empty
+fields starting from the current field. All fields above the current
+one are left untouched."
+  (let* ((ofc (org-table-get nil nil)) ; remember old field content
+         (row (org-table-current-dline))
+         (startrow row)
+         (col (org-table-current-column)) ; and current column
+         (srcfile (buffer-file-name))
+         (todo (kanban--get-todo-of-current-col))
+         (maxrow (length (delete nil org-table-dlines)))
+         (elems (delete nil (org-map-entries
+                             '(kanban--todo-links-function srcfile)
+                                        ; select the TODO state via the matcher: just match the TODO.
+                             (if match
+                                 (concat match "+TODO=\"" todo "\"")
+                               (concat "+TODO=\"" todo "\""))
+                                        ; read all agenda files
+                             (if scope
+                                 scope
+                               'agenda))))
+         (elem t))
+    (save-excursion
+      (while (and elem (<= row maxrow))
+        (setq elem (pop elems))
+        (while (and elem (kanban--member-of-table elem 0)) 
+          (setq elem (pop elems)))
+        (while (and elem (<= row maxrow) (not (equal "" (org-table-get row col))))
+          (if (= row maxrow)
+              (setq elem nil) ; stop search
+            (setq row (1+ row)))) ; skip non empty rows
+        (when (and elem (equal "" (org-table-get row col)))
+          (if (= row startrow) (setq ofc elem))
+          (save-excursion
+            (if (org-table-goto-line row)
+                (org-table-get-field col elem))))))
+    (org-table-goto-column col)
+    ofc))
 
 ;; An example for auto-updating kanban tables from duply.han
 ;; I use the double-dash to mark this as "private" function
