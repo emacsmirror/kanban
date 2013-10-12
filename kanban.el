@@ -194,6 +194,18 @@ If SKIPCOL is not set column 1 will be ignored."
     (setq row (1+ row)))
     result)))
 
+(defun kanban--max-row-or-hline ()
+  "Determine data row just above next hline or last row of current table"
+  (if (org-at-table-p)
+      (let ((row (org-table-current-dline)))
+        (while (and
+                (< row (1- (length org-table-dlines)))
+                (aref org-table-dlines row)
+                (aref org-table-dlines (1+ row))
+                (= (1+ (aref org-table-dlines row)) (aref org-table-dlines (1+ row))))
+          (setq row (1+ row)))
+        row)))
+
 ; Fill the first column with TODO items, except if they exist in other cels
 ;;;###autoload
 (defun kanban-todo (row cels &optional match scope)
@@ -257,7 +269,7 @@ one are left untouched."
          (col (org-table-current-column)) ; and current column
          (srcfile (buffer-file-name))
          (todo (kanban--get-todo-of-current-col))
-         (maxrow (length (delete nil org-table-dlines)))
+         (maxrow (kanban--max-row-or-hline))
          (elems (delete nil (org-map-entries
                              '(kanban--todo-links-function srcfile)
                                         ; select the TODO state via the matcher: just match the TODO.
