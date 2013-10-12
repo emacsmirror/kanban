@@ -130,8 +130,10 @@ Optionally ignore fields in columns left of STARTCOLUMN"
       (setq title (substring title 0 (min 30 (length title)))))
     ; clean up the link
     (when (string-match "[\][]" link)
-      (setq link (replace-regexp-in-string "[\][/]" "." link))
-      (setq link (concat "/" (substring link 1) "/"))
+      (setq link (substring link 1))
+      (setq link (regexp-quote link))
+      (setq link (replace-regexp-in-string "\\(\\\\\\[\\|]\\|/\\)" "." link))
+      (setq link (concat "/\\*.*" link "/"))
       (if (not file) (setq file "file:::")))
     (concat "[[" file link (if title (concat "][" title)) "]]" )))
 
