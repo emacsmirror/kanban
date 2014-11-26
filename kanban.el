@@ -2,7 +2,7 @@
 ;;
 ;; Copyright (C) 2012-2013  Arne Babenhauserheide <arne_bab@web.de>
 
-;; Version: 0.1.2
+;; Version: 0.1.3
 
 ;; Author: Arne Babenhauserheide <arne_bab@web.de>
 ;; Keywords: outlines, convenience
@@ -63,6 +63,11 @@
 ;; TODO: The links don’t yet work for tagged entries. Fix that. There
 ;; has to be some org-mode function to retrieve the plain header.
 ;;
+;; NEWS
+;; 
+;; 0.1.3: just two more TODO entries.
+;; 
+;; 
 ;; TODO: kanban-todo sometimes inserts no tasks at all if there are multiple tasks in non-standard states.
 ;;
 ;; TODO: bold text in headlines breaks the parser (*bold*).
