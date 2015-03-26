@@ -2,7 +2,7 @@
 ;;
 ;; Copyright (C) 2012-2013  Arne Babenhauserheide <arne_bab@web.de>
 
-;; Version: 0.1.3
+;; Version: 0.1.4
 
 ;; Author: Arne Babenhauserheide <arne_bab@web.de>
 ;; Keywords: outlines, convenience
@@ -69,7 +69,7 @@
 ;; 
 ;; ChangeLog:
 ;;
-;;  - 0.1.3: Test version to see whether the marmalade upload works.
+;;  - 0.1.4: Test version to see whether the marmalade upload works.
 ;; 
 ;;; Code:
 
