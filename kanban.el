@@ -69,6 +69,7 @@
 ;; 
 ;; ChangeLog:
 ;;
+;;  - 0.1.6: defcustom instead of defvar
 ;;  - 0.1.5: Allow customizing the maximum column width with
 ;;           kanban-max-column-width
 ;;  - 0.1.4: Test version to see whether the marmalade upload works.
@@ -85,7 +86,7 @@ table."
   (let ((words org-todo-keywords-1))
     (nth (- column 1) words)))
 
-(defvar kanban-max-column-width 30
+(defcustom kanban-max-column-width 30
   "The maximum width of the columns in the KANBAN table.")
 
 (defun kanban--todo-links-function ()
