@@ -1,8 +1,8 @@
 ;;; kanban.el --- Parse org-todo headlines to use org-tables as Kanban tables
 ;;
-;; Copyright (C) 2012-2013  Arne Babenhauserheide <arne_bab@web.de>
+;; Copyright (C) 2012-2015  Arne Babenhauserheide <arne_bab@web.de>
 
-;; Version: 0.1.5
+;; Version: 0.1.6
 
 ;; Author: Arne Babenhauserheide <arne_bab@web.de>
 ;; Keywords: outlines, convenience
