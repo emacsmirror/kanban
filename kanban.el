@@ -2,7 +2,7 @@
 ;;
 ;; Copyright (C) 2012-2013  Arne Babenhauserheide <arne_bab@web.de>
 
-;; Version: 0.1.4
+;; Version: 0.1.5
 
 ;; Author: Arne Babenhauserheide <arne_bab@web.de>
 ;; Keywords: outlines, convenience
@@ -69,6 +69,8 @@
 ;; 
 ;; ChangeLog:
 ;;
+;;  - 0.1.5: Allow customizing the maximum column width with
+;;           kanban-max-column-width
 ;;  - 0.1.4: Test version to see whether the marmalade upload works.
 ;; 
 ;;; Code:
@@ -82,6 +84,9 @@ states will be shown, with n as the number of columns in your
 table."
   (let ((words org-todo-keywords-1))
     (nth (- column 1) words)))
+
+(defvar kanban-max-column-width 30
+  "The maximum width of the columns in the KANBAN table.")
 
 (defun kanban--todo-links-function ()
   "Retrieve the current header as org-mode link."
@@ -106,10 +111,10 @@ table."
                      "\\[" "{" (replace-regexp-in-string
                                 "\\]" "}" (replace-regexp-in-string
                                            "\\[\\[\\(.*\\)\\]\\[\\(.*\\)\\]\\]" "{\\2}" notrailing))))
-           ; finally shorten the string to a maximum length of 30 chars
+           ; finally shorten the string to a maximum length of kanban-max-column-width chars
            (clean (substring nolinks
                              (+ (length keyword) 1)
-                             (min 30 (length nolinks)))))
+                             (min kanban-max-column-width (length nolinks)))))
       (concat "[[" file link "][" clean "]]" ))))
 
 ;; Fill the kanban table with tasks with corresponding TODO states from org files
