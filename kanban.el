@@ -1,8 +1,8 @@
 ;;; kanban.el --- Parse org-todo headlines to use org-tables as Kanban tables
 ;;
-;; Copyright (C) 2012-2015  Arne Babenhauserheide <arne_bab@web.de>
+;; Copyright (C) 2012-2016  Arne Babenhauserheide <arne_bab@web.de>
 
-;; Version: 0.1.6
+;; Version: 0.1.7
 
 ;; Author: Arne Babenhauserheide <arne_bab@web.de>
 ;; Keywords: outlines, convenience
@@ -69,6 +69,8 @@
 ;; 
 ;; ChangeLog:
 ;;
+;;  - 0.1.7: strip keyword from link for org-version >= 9 and
+;;           avoid stripping trailing "* .*" in lines
 ;;  - 0.1.6: defcustom instead of defvar
 ;;  - 0.1.5: Allow customizing the maximum column width with
 ;;           kanban-max-column-width
@@ -101,7 +103,11 @@ table."
         (setq file (concat file "::")))
     ; clean up the string
     (let* (; first remove the initial headline marker FIXME: currently gets later "* ", too
-           (cleanline (nth 1 (split-string line "* ")))
+           (cleanline (substring
+                       (string-join (cdr (split-string line "* ")) "* ")
+                       (if (version<= (org-version) "9")
+                           0 ; old org-mode matches with TODO keyword
+                         (+ (length keyword) 1))))
            ; and kill off links in the link part
            (link (replace-regexp-in-string "\\[" "%5B"
                                            (replace-regexp-in-string "\\]" "%5D" cleanline)))
@@ -114,7 +120,7 @@ table."
                                            "\\[\\[\\(.*\\)\\]\\[\\(.*\\)\\]\\]" "{\\2}" notrailing))))
            ; finally shorten the string to a maximum length of kanban-max-column-width chars
            (clean (substring nolinks
-                             (+ (length keyword) 1)
+                             0
                              (min kanban-max-column-width (length nolinks)))))
       (concat "[[" file link "][" clean "]]" ))))
 
