@@ -52,15 +52,6 @@
 ;; #+TBLFM: @1$1='(kanban-headers)::@2$1..@>$>='(kanban-zero @# $# "TAG" '(list-of-files))
 ;; "TAG" and the list of files are optional
 ;;
-;; Faster Example with kanban-fill:
-;; 
-;; |   |   |   |
-;; |---+---+---|
-;; |   |   |   |
-;; |   |   |   |
-;; #+TBLFM: @2='(kanban-fill "TAG" '(list-of-files))::@1$1='(kanban-headers $#)::
-;; "TAG" and the list of files are optional
-;; 
 ;; * Stateful Kanban: Use org-mode to retrieve tasks, but track their state in the Kanban board
 ;;
 ;; |   |   |   |
@@ -68,6 +59,16 @@
 ;; |   |   |   |
 ;; |   |   |   |
 ;; #+TBLFM: @1$1='(kanban-headers)::@2$1..@>$1='(kanban-todo @# @2$2..@>$> "TAG" '(list-of-files))
+;; "TAG" and the list of files are optional
+;;
+;; Faster Example with kanban-fill (fills fields into their starting
+;; state but does not change them):
+;;
+;; |   |   |   |
+;; |---+---+---|
+;; |   |   |   |
+;; |   |   |   |
+;; #+TBLFM: @2='(kanban-fill "TAG" '(list-of-files))::@1$1='(kanban-headers $#)::
 ;; "TAG" and the list of files are optional
 ;;
 ;; More complex use cases are described in the file sample.org
