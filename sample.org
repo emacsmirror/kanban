@@ -20,7 +20,7 @@ Example Kanban File
 |      |      |      |         |      |       |
 |      |      |      |         |      |       |
 |      |      |      |         |      |       |
-#+TBLFM: @2$1..@>$>='(kanban-zero @# $# "+prj-HOLD" '("sample.org"))::@1='(kanban-headers $#)
+#+TBLFM: @1='(kanban-headers $#)::@2$1..@>$>='(kanban-zero @# $# "+prj-HOLD" '("sample.org"))
 
 * Zero state Kanban: kanban-fill: == * Attention * ==
 |   |   |   |   | WAITING |   |
