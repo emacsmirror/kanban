@@ -5,17 +5,73 @@ Example Kanban File
 #+FILETAGS: board
 #+CATEGORY: board
 #+STARTUP: nofold
-* Zero state Kanban: == * Attention * ==
-| TODO | NEXT                 | DONE | WAITING | HOLD | MAYBE |
-|------+----------------------+------+---------+------+-------|
-|      |                      |      |         |      |       |
-|      |                      |      |         |      |       |
-|      |                      |      |         |      |       |
-|      |                      |      |         |      |       |
-|      |                      |      |         |      |       |
-|      |                      |      |         |      |       |
-|      |                      |      |         |      |       |
-|      |                      |      |         |      |       |
-|      |                      |      |         |      |       |
-|      |                      |      |         |      |       |
-#+TBLFM: @2$1..@>$>='(kanban-zero @# $# "+prj-HOLD" '(org-agenda-files))::@1='(kanban-headers $#)
+#+TODO: TODO NEXT DOING WAITING | DONE HOLD
+
+* Zero state Kanban: kanban-zero: == * Attention * ==
+| TODO | NEXT | DONE | WAITING | HOLD | MAYBE |
+|------+------+------+---------+------+-------|
+|      |      |      |         |      |       |
+|      |      |      |         |      |       |
+|      |      |      |         |      |       |
+|      |      |      |         |      |       |
+|      |      |      |         |      |       |
+|      |      |      |         |      |       |
+|      |      |      |         |      |       |
+|      |      |      |         |      |       |
+|      |      |      |         |      |       |
+|      |      |      |         |      |       |
+#+TBLFM: @1='(kanban-headers $#)::@2$1..@>$>='(kanban-zero @# $# "+prj-HOLD" '("sample.org"))
+
+* Zero state Kanban: kanban-fill: == * Attention * ==
+|   |   |   |   | WAITING |   |
+|---+---+---+---+---------+---|
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+#+TBLFM: @2='(kanban-fill "+prj-HOLD" '("sample.org"))::@1$1='(kanban-headers $#)
+
+* Todo state Kanban: == * Attention * ==
+|   |   |   |   | WAITING |   |
+|---+---+---+---+---------+---|
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+|   |   |   |   |         |   |
+#+TBLFM: @2$1='(kanban-fill "+prj-HOLD" '("sample.org"))::@1$1='(kanban-headers $#)
+
+* item 1																:prj:
+  This item is totally ignored because not having any active state.
+* TODO item 2															:prj:
+  Only TODO items are relevant for todo state kanban.
+* NEXT item 3															:prj:
+* DOING item 4															:prj:
+* WAITING item 5														:prj:
+* DONE item 6															:prj:
+* HOLD item 7															:prj:
+  This item is ignored because of state "HOLD".
+* TODO item 8															:prj:
+  Only TODO items are relevant for todo state kanban.
+* TODO <<item 9>> 														:prj:
+  Link destination formatted as dedicated target.
+* NEXT item 10															:prj:
+  :PROPERTIES:
+  :CUSTOM_ID: i_am_item_10
+  :END:
+  Using CUSTOM_ID is the most safe method to set a link destination.
+* DOING item 11															:prj:
+* TODO item 12															:prj:
+* TODO item 13
+  Ignored because of missing tag prj.
+* DOING item 14															:prj:
+* NEXT item 15															:prj:
