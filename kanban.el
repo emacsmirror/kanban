@@ -50,7 +50,10 @@
 ;; |   |   |   |
 ;; |   |   |   |
 ;; #+TBLFM: @1$1='(kanban-headers)::@2$1..@>$>='(kanban-zero @# $# "TAG" '(list-of-files))
-;; "TAG" and the list of files are optional
+;; 
+;; "TAG" and the list of files are optional. To get all tags, use ""
+;; or nil. To only show entries from the current file, use 'file
+;; instead of '(list-of-files).
 ;;
 ;; * Stateful Kanban: Use org-mode to retrieve tasks, but track their state in the Kanban board
 ;;
