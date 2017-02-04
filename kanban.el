@@ -1,9 +1,9 @@
 ;;; kanban.el --- Parse org-todo headlines to use org-tables as Kanban tables
 ;;
-;; Copyright (C) 2012-2016  Arne Babenhauserheide <arne_bab@web.de>
+;; Copyright (C) 2012-2017  Arne Babenhauserheide <arne_bab@web.de>
 ;;           and 2013 stackeffect
 
-;; Version: 0.2.0
+;; Version: 0.2.1
 
 ;; Author: Arne Babenhauserheide <arne_bab@web.de>
 ;; Keywords: outlines, convenience
@@ -82,6 +82,7 @@
 ;; 
 ;; ChangeLog:
 ;;
+;;  - 0.2.1: document usage of "" to get all tags and 'file
 ;;  - 0.2.0: Finally merge the much faster kanban-fill from stackeffect.
 ;;           I’m sorry that it took me 3 years to get there.
 ;;  - 0.1.7: strip keyword from link for org-version >= 9 and
