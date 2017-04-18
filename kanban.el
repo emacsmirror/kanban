@@ -82,6 +82,7 @@
 ;; 
 ;; ChangeLog:
 ;;
+;;  - tip:   cleanup of titles from remote files
 ;;  - 0.2.1: document usage of "" to get all tags and 'file
 ;;  - 0.2.0: Finally merge the much faster kanban-fill from stackeffect.
 ;;           I’m sorry that it took me 3 years to get there.
