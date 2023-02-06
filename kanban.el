@@ -1,9 +1,9 @@
 ;;; kanban.el --- Parse org-todo headlines to use org-tables as Kanban tables
 ;;
-;; Copyright (C) 2012-2017  Arne Babenhauserheide <arne_bab@web.de>
+;; Copyright (C) 2012-2023  Arne Babenhauserheide <arne_bab@web.de>
 ;;           and 2013 stackeffect
 
-;; Version: 0.2.1
+;; Version: 0.2.2
 
 ;; Author: Arne Babenhauserheide <arne_bab@web.de>
 ;; Keywords: outlines, convenience
@@ -83,6 +83,7 @@
 ;; ChangeLog:
 ;;
 ;;  - tip:   cleanup of titles from remote files
+;;  - 0.2.2: actually (require 'org)
 ;;  - 0.2.1: document usage of "" to get all tags and 'file
 ;;  - 0.2.0: Finally merge the much faster kanban-fill from stackeffect.
 ;;           I’m sorry that it took me 3 years to get there.
@@ -94,6 +95,8 @@
 ;;  - 0.1.4: Test version to see whether the marmalade upload works.
 ;; 
 ;;; Code:
+
+(require 'org)
 
 (defcustom kanban-max-column-width 30
   "The maximum width of the columns in the KANBAN table.")
@@ -191,7 +194,10 @@ row 1 does not contain a valid TODO"
 org-mode headers which have a TODO state in their respective TODO
 state. Useful for getting a simple overview of your tasks.
 
-Gets the ROW and COLUMN via TBLFM ($# and @#) and can get a string as MATCH to select only entries with a matching tag, as well as a list of org-mode files as the SCOPE to search for tasks."
+Gets the ROW and COLUMN via TBLFM ($# and @#) and can get a
+string as MATCH to select only entries with a matching tag, as
+well as a list of org-mode files as the SCOPE to search for
+tasks."
   (let*
       ((todo (kanban--get-todo-of-current-col))
        (srcfile (buffer-file-name))
