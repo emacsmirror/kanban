@@ -97,9 +97,12 @@
 ;;; Code:
 
 (require 'org)
+(require 'org-element)
 
 (defcustom kanban-max-column-width 30
-  "The maximum width of the columns in the KANBAN table.")
+  "The maximum width of the columns in the KANBAN table."
+  :type 'integer
+  :group 'kanban)
 
 ;; Get the defined todo-states from the current org-mode document.
 ;;;###autoload
@@ -260,7 +263,10 @@ table with org-mode TODO entries, if they are not in another cell
 of the table. This allows you to set the state manually and just
 use org-mode to supply new TODO entries.
 
-Gets the ROW and all other CELS via TBLFM ($# and @2$2..@>$>) and can get a string as MATCH to select only entries with a matching tag, as well as a list of org-mode files as the SCOPE to search for tasks."
+Gets the ROW and all other CELS via TBLFM ($# and @2$2..@>$>) and
+can get a string as MATCH to select only entries with a matching
+tag, as well as a list of org-mode files as the SCOPE to search
+for tasks."
  (let* ((srcfile (buffer-file-name))
         (elem (nth (- row 2) (delete nil
                                    (org-map-entries
@@ -282,7 +288,7 @@ Gets the ROW and all other CELS via TBLFM ($# and @2$2..@>$>) and can get a stri
                                                                                   (min 25 (length shortline)))
                                                                        ""))
                                                           (mapconcat 'identity
-                                                                     (reverse (rest (reverse
+                                                                     (reverse (cdr (reverse
                                                                                      (split-string shortline " "))))
                                                                      " ") shortline)))
                                           (concat "[[" file cleanline "][" clean "]]" ))))
@@ -304,7 +310,9 @@ table with org-mode TODO entries, if they are not in another cell
 of the table. This allows you to set the state manually and just
 use org-mode to supply new TODO entries.
 
-Can get a string as MATCH to select only entries with a matching tag, as well as a list of org-mode files as the SCOPE to search for tasks.
+Can get a string as MATCH to select only entries with a matching
+tag, as well as a list of org-mode files as the SCOPE to search
+for tasks.
 
 Only not already present TODO states will be filled into empty
 fields starting from the current field. All fields above the current
@@ -352,7 +360,7 @@ one are left untouched."
   (when (and (stringp buffer-file-name)
              (string-match kanbanbufferregexp buffer-file-name)) ;; match files such as kXXkk.org, kYYkk.org etc.
     (save-excursion
-      (beginning-of-buffer)
+      (goto-char (point-min))
       (while (search-forward "='(kanban-" nil t)
         (org-ctrl-c-ctrl-c)))))
 
