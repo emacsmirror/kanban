@@ -3,7 +3,7 @@
 ;; Copyright (C) 2012-2023  Arne Babenhauserheide <arne_bab@web.de>
 ;;           and 2013 stackeffect
 
-;; Version: 0.2.2
+;; Version: 0.2.3
 
 ;; Author: Arne Babenhauserheide <arne_bab@web.de>
 ;; Keywords: outlines, convenience
@@ -83,6 +83,7 @@
 ;; ChangeLog:
 ;;
 ;;  - tip:   cleanup of titles from remote files
+;;  - 0.2.3: fix breakage when org returned :title as list (use :raw-value instead)
 ;;  - 0.2.2: actually (require 'org)
 ;;  - 0.2.1: document usage of "" to get all tags and 'file
 ;;  - 0.2.0: Finally merge the much faster kanban-fill from stackeffect.
