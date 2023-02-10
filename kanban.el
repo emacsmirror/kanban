@@ -78,8 +78,7 @@
 ;; 
 ;; TODO: kanban-todo sometimes inserts no tasks at all if there are multiple tasks in non-standard states.
 ;;
-;; TODO: bold text in headlines breaks the parser (*bold*).
-;; 
+
 ;; ChangeLog:
 ;;
 ;;  - tip:   cleanup of titles from remote files
@@ -146,7 +145,7 @@ Optionally ignore fields in columns left of STARTCOLUMN"
          (link (org-element-property :CUSTOM_ID oe)))
 ;     (if (equal file srcfile) (setq file nil))
         ; yes, I can use the row variable. It bleeds over from the
-        ; calling function.
+                                        ; calling function.
     (if file
         (setq file (concat file "::")))
     ; find best target
@@ -168,12 +167,8 @@ Optionally ignore fields in columns left of STARTCOLUMN"
            ; finally shorten the string to a maximum length of kanban-max-column-width chars
       (setq title (substring title 0 (min kanban-max-column-width (length title)))))
     ; clean up the link
-    (when (string-match "[\][]" link)
-      (setq link (substring link 1))
-      (setq link (regexp-quote link))
-      (setq link (replace-regexp-in-string "\\(\\\\\\[\\|]\\|/\\)" "." link))
-      (setq link (concat "/\\*.*" link "/"))
-      (if (not file) (setq file "file:::")))
+    (setq link (string-replace "[" "\\[" ; yes, this actually does something
+                               (string-replace "]" "\\]" link)))
     ; limit the length of items for very long paths without title
     (when (and (not title)
                (> (length file) kanban-max-column-width))
