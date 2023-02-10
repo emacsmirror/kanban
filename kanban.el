@@ -142,7 +142,7 @@ Optionally ignore fields in columns left of STARTCOLUMN"
   "Retrieve the current header as org-mode link."
   (let* ((file (buffer-file-name))
          (oe (org-element-at-point))
-         (title (org-element-property :title oe))
+         (title (org-element-property :raw-value oe))
          (link (org-element-property :CUSTOM_ID oe)))
 ;     (if (equal file srcfile) (setq file nil))
         ; yes, I can use the row variable. It bleeds over from the
@@ -181,7 +181,7 @@ Optionally ignore fields in columns left of STARTCOLUMN"
              ; remove link type prefixes
              (ti (replace-regexp-in-string "^.*://" "" fulllink)))
         (setq title (concat (substring ti 0 (- (/ kanban-max-column-width 2) 2)) "..." (substring ti (- (length ti) (- (/ kanban-max-column-width 2) 1) ) (length ti))))))
-    (concat "[[" file link (if title (concat "][" title)) "]]" )))
+    (concat "[[" file link (if title (concat "][" title) "") "]]" )))
 
 ;; Get TODO of current column from field in row 1
 (defun kanban--get-todo-of-current-col ()
@@ -204,8 +204,7 @@ tasks."
   (let*
       ((todo (kanban--get-todo-of-current-col))
        (srcfile (buffer-file-name))
-       (elem (and todo (nth (- row 2)
-                            (delete nil (org-map-entries
+       (elems (and todo (org-map-entries
                                '(kanban--todo-links-function srcfile)
                                ; select the TODO state via the matcher: just match the TODO.
                                (if match
@@ -214,7 +213,8 @@ tasks."
                                ; read all agenda files
                                (if scope
                                    scope
-                                 'agenda)))))))
+                                 'agenda))))
+       (elem (nth (- row 2) (delete nil elems))))
     (if (equal elem nil)
         ""
       elem)))
